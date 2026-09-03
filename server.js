@@ -12,13 +12,14 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
   .map((item) => item.trim())
   .filter(Boolean);
 
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  if (origin.startsWith("chrome-extension://")) return true;
+  return allowedOrigins.includes(origin);
+}
+
 function corsHeaders(origin) {
-  const allowOrigin =
-    allowedOrigins.length === 0
-      ? "*"
-      : origin && allowedOrigins.includes(origin)
-        ? origin
-        : "";
+  const allowOrigin = origin && isAllowedOrigin(origin) ? origin : "";
 
   return {
     ...(allowOrigin ? { "Access-Control-Allow-Origin": allowOrigin } : {}),
@@ -156,7 +157,7 @@ const server = http.createServer(async (req, res) => {
   const cors = corsHeaders(origin);
 
   if (req.method === "OPTIONS") {
-    if (allowedOrigins.length > 0 && !cors["Access-Control-Allow-Origin"]) {
+    if (origin && !isAllowedOrigin(origin)) {
       return sendJson(res, 403, { error: "Origin not allowed" }, cors);
     }
 
@@ -183,7 +184,7 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 401, { error: "Unauthorized" }, cors);
     }
 
-    if (allowedOrigins.length > 0 && origin && !cors["Access-Control-Allow-Origin"]) {
+    if (origin && !isAllowedOrigin(origin)) {
       return sendJson(res, 403, { error: "Origin not allowed" }, cors);
     }
 
