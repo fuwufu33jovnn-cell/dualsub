@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "DualSub — Bilingual Captions",
+  "version": "0.2.6",
+  "description": "Bilingual subtitles with platform-caption priority, burned-in subtitle OCR fallback, speech fallback, persistent floating controls, and flexible subtitle layout.",
+  "permissions": ["storage","activeTab","tabCapture","offscreen"],
+  "host_permissions": ["<all_urls>","https://www.youtube.com/*","https://*.bilibili.com/*","https://generativelanguage.googleapis.com/*","https://api.deepseek.com/*","https://api.openai.com/*","https://dashscope.aliyuncs.com/*","https://api.moonshot.cn/*","https://api.siliconflow.cn/*","https://api.mistral.ai/*","https://ark.cn-beijing.volces.com/*"],
+  "background": {"service_worker":"background.js"},
+  "content_scripts": [{"matches":["http://*/*","https://*/*"],"js":["core.js","content.js"],"css":["content.css"],"run_at":"document_idle"}],
+  "web_accessible_resources":[{"resources":["page-bridge.js"],"matches":["https://www.youtube.com/*"]}],
+  "action":{"default_title":"DualSub · 开始/停止语音识别；已隐藏的网站可点此恢复","default_icon":{"16":"assets/icon16.png","32":"assets/icon32.png"}},
+  "icons":{"16":"assets/icon16.png","32":"assets/icon32.png","48":"assets/icon48.png","128":"assets/icon128.png"}
+}
